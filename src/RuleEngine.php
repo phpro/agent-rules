@@ -18,6 +18,8 @@ final readonly class RuleEngine
     /**
      * @no-named-arguments
      * @param list<RuleInterface<T>> $rules
+     *
+     * @throws \InvalidArgumentException When a rule depends on an unknown rule.
      */
     public function __construct(
         RuleInterface ... $rules
@@ -31,6 +33,8 @@ final readonly class RuleEngine
      * @param iterable<int, RuleInterface<TA>> $rules
      *
      * @return self<TA>
+     *
+     * @throws \InvalidArgumentException When a rule depends on an unknown rule.
      */
     public static function fromIterable(iterable $rules): self
     {

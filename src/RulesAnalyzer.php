@@ -17,6 +17,8 @@ final readonly class RulesAnalyzer
      * @param iterable<RuleInterface<T>> $rules
      *
      * @return list<RuleInterface<T>>
+     *
+     * @throws \InvalidArgumentException When a rule depends on an unknown rule.
      */
     public static function resolve(iterable $rules): array
     {

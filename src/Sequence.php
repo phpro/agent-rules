@@ -20,8 +20,10 @@ final readonly class Sequence implements RuleInterface
 
     /**
      * @param string $name
-     * @param iterable<RuleInterface<T>> $rules
+     * @param array<RuleInterface<T>> $rules
      * @param list<string> $dependencies
+     *
+     * @throws \InvalidArgumentException When a rule depends on an unkown rule.
      */
     public function __construct(
         private string $name,

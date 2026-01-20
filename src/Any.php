@@ -20,8 +20,10 @@ final readonly class Any implements RuleInterface
 
     /**
      * @param string $name
-     * @param iterable<RuleInterface<T>> $rules
+     * @param array<RuleInterface<T>> $rules
      * @param list<string> $dependencies
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct(
         private string $name,
@@ -46,6 +48,9 @@ final readonly class Any implements RuleInterface
         return $this->dependencies;
     }
 
+    /**
+     * @throws \InvalidArgumentException
+     */
     #[\Override]
     public function check(mixed $subject): RuleEvaluation
     {
