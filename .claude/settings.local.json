@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(./vendor/bin/mago analyze:*)",
-      "Bash(composer update:*)"
-    ]
-  }
-}

@@ -6,7 +6,8 @@ declare(strict_types=1);
 namespace Phpro\AgentRules;
 
 use Psl\Graph;
-use function Psl\Vec\map;
+use Psl\Iter;
+use Psl\Vec;
 
 final readonly class RulesAnalyzer
 {
@@ -31,7 +32,7 @@ final readonly class RulesAnalyzer
 
         foreach ($rules as $rule) {
             foreach ($rule->dependencies() as $dependency) {
-                if (!array_key_exists($dependency, $rulesByName)) {
+                if (!Iter\contains_key($rulesByName, $dependency)) {
                     throw new \InvalidArgumentException(
                         "Rule '{$rule->name()}' depends on unknown rule '{$dependency}'"
                     );
@@ -46,7 +47,7 @@ final readonly class RulesAnalyzer
             throw new \InvalidArgumentException('Cyclic dependency detected among rules.');
         }
 
-        return map(
+        return Vec\map(
             $sortedNames,
             static fn (string $name): RuleInterface => $rulesByName[$name]
         );

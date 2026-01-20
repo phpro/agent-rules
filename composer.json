@@ -3,7 +3,7 @@
     "description": "Declarative rule engine for conversational agents and interactive workflows",
     "type": "library",
     "require": {
-        "php": "~8.4.0 || ~8.5.0",
+        "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
         "azjezz/psl": "^4.2",
         "symfony/ai-agent": "^0.2.0"
     },
@@ -11,6 +11,11 @@
     "autoload": {
         "psr-4": {
             "Phpro\\AgentRules\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Phpro\\AgentRules\\Tests\\": "tests/"
         }
     },
     "authors": [

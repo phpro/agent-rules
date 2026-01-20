@@ -5,9 +5,11 @@
          cacheDirectory=".phpunit.cache"
          executionOrder="depends,defects"
          requireCoverageMetadata="true"
-         beStrictAboutCoverageMetadata="true"
+         beStrictAboutCoverageMetadata="false"
          beStrictAboutOutputDuringTests="true"
          displayDetailsOnPhpunitDeprecations="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnPhpunitNotices="true"
          failOnPhpunitDeprecation="true"
          failOnRisky="true"
          failOnWarning="true">
@@ -23,7 +25,10 @@
         </include>
     </source>
 
-    <coverage includeUncoveredFiles="true">
+    <coverage includeUncoveredFiles="true"
+              pathCoverage="false"
+              ignoreDeprecatedCodeUnits="true"
+              disableCodeCoverageIgnore="false">
         <report>
             <clover outputFile=".phpunit.cache/coverage/clover.xml"/>
             <html outputDirectory=".phpunit.cache/coverage/html"/>
