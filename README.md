@@ -351,9 +351,9 @@ sequenceDiagram
 
 ### Implementation
 
-```php
-// 1. Define the request context
+#### 1. Define the Request Context
 
+```php
 use Symfony\AI\Platform\Contract\JsonSchema\Attribute\With;
 
 final class RegistrationRequest
@@ -367,8 +367,11 @@ final class RegistrationRequest
         public readonly ?bool $termsAccepted = null,
     ) {}
 }
+```
 
-// 2. Create validation rules
+#### 2. Create Validation Rules
+
+```php
 #[AutoconfigureTag('registration.rule', ['priority' => 100])]
 class EmailRule implements RuleInterface
 {
@@ -398,7 +401,9 @@ class EmailRule implements RuleInterface
         return RuleEvaluation::pass();
     }
 }
+```
 
+```php
 #[AutoconfigureTag('registration.rule', ['priority' => 90])]
 class PasswordRule implements RuleInterface
 {
@@ -428,8 +433,12 @@ class PasswordRule implements RuleInterface
         return RuleEvaluation::pass();
     }
 }
+```
+#### 3. Create the AI tool
 
-// 3. Create the AI tool
+This is an example of linking the rule engine to a Symfony AI agent tool:
+
+```php
 #[AsTool(
     name: 'validate_registration',
     description: 'Validates user registration data and requests missing information.'
@@ -462,9 +471,11 @@ final class RegistrationTool implements HasSourcesInterface
         return $result;
     }
 }
+```
 
-// 4. Configure the AI agent
-// config/packages/ai.yaml
+With following agent configuration:
+
+```yaml
 ai:
     agent:
         registration_assistant:
