@@ -2,10 +2,7 @@
 
 declare(strict_types=1);
 
-
 namespace Phpro\AgentRules\Result;
-
-
 
 final readonly class ErrorResult extends AbstractResult
 {

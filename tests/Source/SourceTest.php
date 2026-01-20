@@ -25,4 +25,21 @@ final class SourceTest extends TestCase
         self::assertSame('https://docs.example.com', $source->reference);
         self::assertSame('This is the content', $source->content);
     }
+
+    #[Test]
+    public function it_can_be_json_serialized(): void
+    {
+        $source = new Source(
+            name: 'API Reference',
+            reference: 'https://api.example.com',
+            content: 'API documentation content',
+        );
+
+        $json = json_encode($source, JSON_THROW_ON_ERROR);
+
+        self::assertJsonStringEqualsJsonString(
+            '{"name":"API Reference","reference":"https://api.example.com","content":"API documentation content"}',
+            $json
+        );
+    }
 }

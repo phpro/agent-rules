@@ -2,15 +2,19 @@
 
 declare(strict_types=1);
 
-
 namespace Phpro\AgentRules\Source;
 
-final class SourceMap
+use Psl\Iter;
+
+/**
+ * @implements \IteratorAggregate<int, Source>
+ */
+final class SourceMap implements \IteratorAggregate, \Countable
 {
     /**
      * @var list<Source>
      */
-    public array $sources;
+    private array $sources;
 
     /**
      * @no-named-arguments
@@ -34,5 +38,17 @@ final class SourceMap
         $this->sources = [...$this->sources, ...$sources];
 
         return $this;
+    }
+
+    #[\Override]
+    public function getIterator(): \Traversable
+    {
+        return new \ArrayIterator($this->sources);
+    }
+
+    #[\Override]
+    public function count(): int
+    {
+        return Iter\count($this->sources);
     }
 }

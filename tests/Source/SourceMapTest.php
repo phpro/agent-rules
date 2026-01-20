@@ -62,4 +62,34 @@ final class SourceMapTest extends TestCase
         self::assertSame('Second', $sources[1]->name);
         self::assertSame('Third', $sources[2]->name);
     }
+
+    #[Test]
+    public function it_is_iterable(): void
+    {
+        $source1 = new Source('First', 'https://example.com/1', 'Content 1');
+        $source2 = new Source('Second', 'https://example.com/2', 'Content 2');
+
+        $map = new SourceMap($source1, $source2);
+
+        $names = [];
+        foreach ($map as $source) {
+            $names[] = $source->name;
+        }
+
+        self::assertSame(['First', 'Second'], $names);
+    }
+
+    #[Test]
+    public function it_is_countable(): void
+    {
+        $map = new SourceMap();
+        self::assertCount(0, $map);
+
+        $map->add(
+            new Source('First', 'https://example.com/1', 'Content 1'),
+            new Source('Second', 'https://example.com/2', 'Content 2')
+        );
+
+        self::assertCount(2, $map);
+    }
 }
