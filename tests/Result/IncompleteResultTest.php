@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Phpro\AgentRules\Result\IncompleteResult;
-use Symfony\AI\Agent\Toolbox\Source\Source;
+use Phpro\AgentRules\Source\Source;
 
 #[CoversClass(IncompleteResult::class)]
 final class IncompleteResultTest extends TestCase
@@ -38,7 +38,7 @@ final class IncompleteResultTest extends TestCase
     {
         $result = new IncompleteResult('email', 'Email is required');
 
-        $sources = $result->sources()->getSources();
+        $sources = $result->sources()->sources();
 
         static::assertCount(0, $sources);
     }
@@ -47,11 +47,14 @@ final class IncompleteResultTest extends TestCase
     public function it_can_add_sources_to_result(): void
     {
         $result = new IncompleteResult('email', 'Email is required');
-        $source = new Source('test-source', 'ref', 'content');
+        $source = new Source('Form Requirements', 'https://forms.example.com', 'Email field must be filled');
 
-        $result->addSources($source);
+        $result->sources()->add($source);
 
-        $sources = $result->sources()->getSources();
+        $sources = $result->sources()->sources();
         static::assertCount(1, $sources);
+        static::assertSame('Form Requirements', $sources[0]->name);
+        static::assertSame('https://forms.example.com', $sources[0]->reference);
+        static::assertSame('Email field must be filled', $sources[0]->content);
     }
 }

@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Phpro\AgentRules\Result\CompleteResult;
-use Symfony\AI\Agent\Toolbox\Source\Source;
+use Phpro\AgentRules\Source\Source;
 
 #[CoversClass(CompleteResult::class)]
 final class CompleteResultTest extends TestCase
@@ -37,7 +37,7 @@ final class CompleteResultTest extends TestCase
     {
         $result = new CompleteResult('Task completed');
 
-        $sources = $result->sources()->getSources();
+        $sources = $result->sources()->sources();
 
         static::assertCount(0, $sources);
     }
@@ -46,11 +46,14 @@ final class CompleteResultTest extends TestCase
     public function it_can_add_sources_to_result(): void
     {
         $result = new CompleteResult('Task completed');
-        $source = new Source('test-source', 'ref', 'content');
+        $source = new Source('Documentation', 'https://docs.example.com', 'See the docs for more info');
 
-        $result->addSources($source);
+        $result->sources()->add($source);
 
-        $sources = $result->sources()->getSources();
+        $sources = $result->sources()->sources();
         static::assertCount(1, $sources);
+        static::assertSame('Documentation', $sources[0]->name);
+        static::assertSame('https://docs.example.com', $sources[0]->reference);
+        static::assertSame('See the docs for more info', $sources[0]->content);
     }
 }

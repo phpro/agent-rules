@@ -20,7 +20,7 @@ literal-named-argument = { enabled = false }
 halstead = { effort-threshold = 7000 }
 
 [analyzer]
-excludes = ["tests/**/*.php"]
+excludes = ["tests/"]
 plugins = ["psl"]
 find-unused-definitions = true
 find-unused-expressions = true

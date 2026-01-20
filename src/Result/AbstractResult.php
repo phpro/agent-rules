@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Phpro\AgentRules\Result;
 
-use Symfony\AI\Agent\Toolbox\Source\Source;
-use Symfony\AI\Agent\Toolbox\Source\SourceMap;
+use Phpro\AgentRules\Source\SourceMap;
 
 abstract readonly class AbstractResult implements ResultInterface
 {
@@ -20,15 +19,6 @@ abstract readonly class AbstractResult implements ResultInterface
     public function sources(): SourceMap
     {
         return $this->sources;
-    }
-
-    public function addSources(Source ... $sources): self
-    {
-        foreach ($sources as $source) {
-            $this->sources->addSource($source);
-        }
-
-        return $this;
     }
 
     #[\Override]

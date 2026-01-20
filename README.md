@@ -8,7 +8,7 @@ Perfect for building chatbots, AI agents, CLI wizards, or any system that guides
 
 Agent Rules provides a logical processing unit for handling **unstructured input in a structured and interactive way**. It enables you to define validation rules that can request missing information, enforce business logic, and provide intelligent feedback to users or AI agents.
 
-Built on top of [Symfony AI Agent](https://github.com/symfony/ai-agent), this library integrates seamlessly with AI-powered tools and conversational interfaces.
+Built to be compatible with [Symfony AI Agent](https://github.com/symfony/ai-agent), this library integrates seamlessly with AI-powered tools and conversational interfaces.
 
 ## Key Features
 
@@ -17,7 +17,7 @@ Built on top of [Symfony AI Agent](https://github.com/symfony/ai-agent), this li
 - **Interactive Feedback**: Rules can request missing data with structured result types
 - **Composable Logic**: Combine rules with `Sequence` (AND), `Any` (OR), and `Either` patterns
 - **Type-Safe**: Full PHP 8.4+ type safety with readonly classes and generic support
-- **AI Agent Integration**: Built-in support for Symfony AI Agent's source tracking and tool system
+- **Framework Agnostic**: Works independently with optional Symfony AI integration
 
 ## Installation
 
@@ -247,65 +247,35 @@ The engine automatically:
 - Detects cyclic dependencies
 - Validates that all dependencies exist
 
-## Integration with Symfony AI Agent
+## Adding Context with Sources
 
-### Creating an AI Tool
-
-```php
-use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
-use Symfony\AI\Agent\Toolbox\Source\HasSourcesInterface;
-use Symfony\AI\Agent\Toolbox\Source\HasSourcesTrait;
-
-#[AsTool(
-    name: 'validate_order',
-    description: 'Validates customer order information and guides through missing data.'
-)]
-final class OrderValidationTool implements HasSourcesInterface
-{
-    use HasSourcesTrait;
-
-    public function __construct(
-        private RuleEngine $ruleEngine,
-    ) {}
-
-    public function __invoke(
-        string $email,
-        ?string $productId = null,
-        ?int $quantity = null,
-    ): ResultInterface {
-        $request = new OrderRequest($email, $productId, $quantity);
-        $evaluation = $this->ruleEngine->evaluate($request);
-
-        $result = $evaluation->result ?? new CompleteResult(
-            message: 'Order validation complete!'
-        );
-
-        // Track sources for AI agent context
-        foreach ($result->sources()->getSources() as $source) {
-            $this->addSource($source);
-        }
-
-        return $result;
-    }
-}
-```
-
-### Adding Sources for Context
+You can attach contextual information to results that helps users or AI agents understand where to find more information:
 
 ```php
-return RuleEvaluation::respond(
-    (new IncompleteResult(
-        missingField: 'productId',
-        message: 'Please provide the product ID.'
-    ))->addSources(
-        new Source(
-            name: 'Product Catalog',
-            reference: 'https://example.com/products',
-            content: 'Browse our product catalog to find product IDs.'
-        )
+use Phpro\AgentRules\Source\Source;
+
+$result = new IncompleteResult(
+    missingField: 'productId',
+    message: 'Please provide the product ID.'
+);
+
+$result->sources()->add(
+    new Source(
+        name: 'Product Catalog',
+        reference: 'https://example.com/products',
+        content: 'Browse our product catalog to find product IDs.'
     )
 );
+
+return RuleEvaluation::respond($result);
 ```
+
+Sources are particularly useful for:
+- Documentation links
+- Example values
+- Help text
+- Related resources
+- API references
 
 ### Symfony Configuration
 
@@ -383,10 +353,15 @@ sequenceDiagram
 
 ```php
 // 1. Define the request context
+
+use Symfony\AI\Platform\Contract\JsonSchema\Attribute\With;
+
 final class RegistrationRequest
 {
     public function __construct(
         public readonly ?string $email = null,
+        #[With(minLength: 10, maxLength: 255)]
+        #[\SensitiveParameter]
         public readonly ?string $password = null,
         public readonly ?string $fullName = null,
         public readonly ?bool $termsAccepted = null,
@@ -469,23 +444,22 @@ final class RegistrationTool implements HasSourcesInterface
     ) {}
 
     public function __invoke(
-        ?string $email = null,
-        ?string $password = null,
-        ?string $fullName = null,
-        ?bool $termsAccepted = null,
+        RegistrationRequest $request,
     ): ResultInterface {
-        $request = new RegistrationRequest(
-            email: $email,
-            password: $password,
-            fullName: $fullName,
-            termsAccepted: $termsAccepted,
-        );
-
         $evaluation = $this->ruleEngine->evaluate($request);
-
-        return $evaluation->result ?? new CompleteResult(
+        $result = $evaluation->result ?? new CompleteResult(
             message: 'Registration validated! Your account has been created.'
         );
+        
+        foreach ($result->sources() as $source) {
+            $this->addSource(new \Symfony\AI\Agent\Toolbox\Source\Source(
+                name: $source->name,
+                reference: $source->reference,
+                content: $source->content
+            ));
+        }
+        
+        return $result;
     }
 }
 

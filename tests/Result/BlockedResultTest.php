@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Phpro\AgentRules\Result\BlockedResult;
-use Symfony\AI\Agent\Toolbox\Source\Source;
+use Phpro\AgentRules\Source\Source;
 
 #[CoversClass(BlockedResult::class)]
 final class BlockedResultTest extends TestCase
@@ -38,7 +38,7 @@ final class BlockedResultTest extends TestCase
     {
         $result = new BlockedResult('test_reason', 'Test message');
 
-        $sources = $result->sources()->getSources();
+        $sources = $result->sources()->sources();
 
         static::assertCount(0, $sources);
     }
@@ -47,11 +47,14 @@ final class BlockedResultTest extends TestCase
     public function it_can_add_sources_to_result(): void
     {
         $result = new BlockedResult('test_reason', 'Test message');
-        $source = new Source('test-source', 'ref', 'content');
+        $source = new Source('Policy Document', 'https://policy.example.com', 'See policy for details');
 
-        $result->addSources($source);
+        $result->sources()->add($source);
 
-        $sources = $result->sources()->getSources();
+        $sources = $result->sources()->sources();
         static::assertCount(1, $sources);
+        static::assertSame('Policy Document', $sources[0]->name);
+        static::assertSame('https://policy.example.com', $sources[0]->reference);
+        static::assertSame('See policy for details', $sources[0]->content);
     }
 }

@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Phpro\AgentRules\Result\ErrorResult;
-use Symfony\AI\Agent\Toolbox\Source\Source;
+use Phpro\AgentRules\Source\Source;
 
 #[CoversClass(ErrorResult::class)]
 final class ErrorResultTest extends TestCase
@@ -41,7 +41,7 @@ final class ErrorResultTest extends TestCase
     {
         $result = new ErrorResult('Error occurred', 'Fix the issue');
 
-        $sources = $result->sources()->getSources();
+        $sources = $result->sources()->sources();
 
         static::assertCount(0, $sources);
     }
@@ -50,11 +50,14 @@ final class ErrorResultTest extends TestCase
     public function it_can_add_sources_to_result(): void
     {
         $result = new ErrorResult('Error occurred', 'Fix the issue');
-        $source = new Source('test-source', 'ref', 'content');
+        $source = new Source('Error Log', 'https://logs.example.com', 'Stack trace details');
 
-        $result->addSources($source);
+        $result->sources()->add($source);
 
-        $sources = $result->sources()->getSources();
+        $sources = $result->sources()->sources();
         static::assertCount(1, $sources);
+        static::assertSame('Error Log', $sources[0]->name);
+        static::assertSame('https://logs.example.com', $sources[0]->reference);
+        static::assertSame('Stack trace details', $sources[0]->content);
     }
 }
