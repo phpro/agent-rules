@@ -4,48 +4,28 @@ declare(strict_types=1);
 
 namespace Phpro\AgentRules\Tests\Result;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Phpro\AgentRules\Result\CompleteResult;
+use Phpro\AgentRules\Result\ResultInterface;
 use Phpro\AgentRules\Source\Source;
 
-#[CoversClass(CompleteResult::class)]
-final class CompleteResultTest extends TestCase
+abstract class AbstractResultTestCase extends TestCase
 {
-    #[Test]
-    public function it_returns_complete_status(): void
+    abstract protected function createResult(): ResultInterface;
+
+    abstract protected function expectedStatus(): string;
+
+    public function test_it_returns_empty_source_map(): void
     {
-        $result = new CompleteResult('Task completed');
-
-        static::assertSame('complete', $result->getStatus());
-    }
-
-    #[Test]
-    public function it_includes_message_in_json_serialization(): void
-    {
-        $result = new CompleteResult('Task completed successfully');
-
-        $serialized = $result->jsonSerialize();
-
-        static::assertSame('complete', $serialized['status']);
-        static::assertSame('Task completed successfully', $serialized['message']);
-    }
-
-    #[Test]
-    public function it_returns_empty_source_map(): void
-    {
-        $result = new CompleteResult('Task completed');
+        $result = $this->createResult();
 
         $sources = $result->sources()->sources();
 
         static::assertCount(0, $sources);
     }
 
-    #[Test]
-    public function it_can_add_sources_to_result(): void
+    public function test_it_can_add_sources_to_result(): void
     {
-        $result = new CompleteResult('Task completed');
+        $result = $this->createResult();
         $source = new Source('Documentation', 'https://docs.example.com', 'See the docs for more info');
 
         $result->sources()->add($source);
@@ -57,10 +37,9 @@ final class CompleteResultTest extends TestCase
         static::assertSame('See the docs for more info', $sources[0]->content);
     }
 
-    #[Test]
-    public function it_includes_sources_in_json_serialization(): void
+    public function test_it_includes_sources_in_json_serialization(): void
     {
-        $result = new CompleteResult('Task completed');
+        $result = $this->createResult();
         $result->sources()->add(
             new Source('Docs', 'https://docs.example.com', 'See docs'),
             new Source('Help', 'https://help.example.com', 'Need help')
@@ -75,5 +54,28 @@ final class CompleteResultTest extends TestCase
         static::assertSame('https://docs.example.com', $data['sources'][0]['reference']);
         static::assertSame('See docs', $data['sources'][0]['content']);
         static::assertSame('Help', $data['sources'][1]['name']);
+    }
+
+    public function test_it_can_add_multiple_sources_at_once(): void
+    {
+        $result = $this->createResult();
+
+        $returnValue = $result->addSources(
+            new Source('API', 'https://api.example.com', 'API docs'),
+            new Source('Guide', 'https://guide.example.com', 'User guide'),
+            new Source('FAQ', 'https://faq.example.com', 'Frequently asked')
+        );
+
+        static::assertSame($result, $returnValue);
+        static::assertCount(3, $result->sources()->sources());
+    }
+
+    public function test_it_includes_status_in_json_serialization(): void
+    {
+        $result = $this->createResult();
+
+        $serialized = $result->jsonSerialize();
+
+        static::assertSame($this->expectedStatus(), $serialized['status']);
     }
 }

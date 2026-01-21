@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-
 namespace Phpro\AgentRules\Result;
-
 
 use Phpro\AgentRules\Source\SourceMap;
 

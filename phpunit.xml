@@ -16,6 +16,7 @@
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>
+            <exclude>tests/Result/AbstractResultTest.php</exclude>
         </testsuite>
     </testsuites>
 
