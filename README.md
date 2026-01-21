@@ -610,6 +610,8 @@ class InventoryRule implements RuleInterface
                 )
             );
         }
+        
+        // You could even save products based on the subject input.
 
         return RuleEvaluation::pass();
     }
@@ -703,10 +705,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-MIT License. See LICENSE file for details.
-
-## Credits
-
-Built by [Phpro](https://www.phpro.be/)
-
-Author: Toon Verwerft (toon.verwerft@phpro.be)
+MIT License. See [LICENSE](LICENSE) file for details.
