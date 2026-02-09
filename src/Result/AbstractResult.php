@@ -34,7 +34,6 @@ abstract readonly class AbstractResult implements ResultInterface
     {
         return [
             'status' => $this->getStatus(),
-            'sources' => $this->sources->sources(),
         ];
     }
 }
