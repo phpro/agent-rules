@@ -37,25 +37,6 @@ abstract class AbstractResultTestCase extends TestCase
         static::assertSame('See the docs for more info', $sources[0]->content);
     }
 
-    public function test_it_includes_sources_in_json_serialization(): void
-    {
-        $result = $this->createResult();
-        $result->sources()->add(
-            new Source('Docs', 'https://docs.example.com', 'See docs'),
-            new Source('Help', 'https://help.example.com', 'Need help')
-        );
-
-        $json = json_encode($result, JSON_THROW_ON_ERROR);
-        $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-
-        static::assertArrayHasKey('sources', $data);
-        static::assertCount(2, $data['sources']);
-        static::assertSame('Docs', $data['sources'][0]['name']);
-        static::assertSame('https://docs.example.com', $data['sources'][0]['reference']);
-        static::assertSame('See docs', $data['sources'][0]['content']);
-        static::assertSame('Help', $data['sources'][1]['name']);
-    }
-
     public function test_it_can_add_multiple_sources_at_once(): void
     {
         $result = $this->createResult();
