@@ -10,7 +10,7 @@ use Phpro\AgentRules\Result\CompleteResult;
 use Phpro\AgentRules\Result\ResultInterface;
 
 #[CoversClass(CompleteResult::class)]
-final class CompleteResultTestCase extends AbstractResultTestCase
+final class CompleteResultTest extends AbstractResultTestCase
 {
     #[\Override]
     protected function createResult(): ResultInterface

@@ -10,7 +10,7 @@ use Phpro\AgentRules\Result\ErrorResult;
 use Phpro\AgentRules\Result\ResultInterface;
 
 #[CoversClass(ErrorResult::class)]
-final class ErrorResultTestCase extends AbstractResultTestCase
+final class ErrorResultTest extends AbstractResultTestCase
 {
     #[\Override]
     protected function createResult(): ResultInterface
