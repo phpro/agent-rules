@@ -4,7 +4,7 @@
     "type": "library",
     "require": {
         "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
-        "azjezz/psl": "^4.2"
+        "php-standard-library/php-standard-library": "^4.2 || ^5.0"
     },
     "license": "MIT",
     "autoload": {
