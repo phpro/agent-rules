@@ -3,8 +3,11 @@
     "description": "Declarative rule engine for conversational agents and interactive workflows",
     "type": "library",
     "require": {
-        "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
-        "php-standard-library/php-standard-library": "^4.2 || ^5.0"
+        "php": "~8.4.0 || ~8.5.0",
+        "php-standard-library/foundation": "^6.1",
+        "php-standard-library/graph": "^6.1",
+        "php-standard-library/iter": "^6.1",
+        "php-standard-library/vec": "^6.1"
     },
     "license": "MIT",
     "autoload": {
